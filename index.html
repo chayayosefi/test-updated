@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <style>
+        body {
+            background-color: #d3d3d3;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            color: purple;
+        }
+
+        span {
+            width: 160px;
+            height: 20px;
+            border: 1px solid;
+            padding: 1px;
+            display: inline-block;
+        }
+
+        canvas {
+            border: dimgray dashed 4px;
+            margin: 20px;
+            margin-left: 360px;
+
+        }
+
+        .myButton {
+            box-shadow: 3px 4px 0px 0px #899599;
+            background: linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
+            background-color: #ededed;
+            border: 1px solid #d6bcd6;
+            display: inline-block;
+            cursor: pointer;
+            color: purple;
+            font-family: Arial;
+            font-size: 17px;
+            padding: 7px 25px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #e1e2ed;
+        }
+
+        .myButton:hover {
+            background: linear-gradient(to bottom, #bab1ba 5%, #ededed 100%);
+            background-color: #bab1ba;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+
+        label {
+            font-size: larger;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div id="data">
+            <label for="radius"><b>radius </b></label>
+            <br>
+            <input id="radius" placeholder="radius" style="background-color: plum;" type="text">
+            <br>
+            <label for="volume"><b> volume </b></label>
+            <br>
+            <span id="volume" style="background-color: plum;"></span>
+            <br>
+            <br>
+            <button id="Calculate" onclick="focusMethod()" class="myButton">Calculate</button>
+
+        </div>
+        <center>
+            <div id="canvas">
+                <label for="painter"><b>Drawing On Canvas! </b></label>
+                <br>
+                <canvas id="painter" width="600" height="600"></canvas>
+                <br>
+                <button id="clear" class="myButton"> clear</button>
+
+            </div>
+
+        </center>
+    </div>
+
+    <script>
+        var radius = document.getElementById("radius");
+        var volume = document.getElementById("volume");
+        var btnCalc = document.getElementById("Calculate");
+        var canvas = document.getElementById('painter');
+        var ctx = canvas.getContext('2d');
+        var btnClear = document.getElementById("clear");
+        var colors = ["#90EE90", "#FFB6C1", "#FFA07A", "#20B2AA", "#87CEFA", "#B0C4DE	", "#DEB887", "#E9967A", "#ADFF2F", "#DA70D6", "#DB7093", "#FF7F50"];
+
+        var x = 300;
+        var y = 300;
+
+        btnCalc.addEventListener("click", calculation);
+        btnClear.addEventListener("click", ClearCanvas);
+
+
+        focusMethod = function getFocus() {
+            document.getElementById("radius").focus();
+        }
+
+        var arr = [];
+        function calculation(r) {
+            var r = radius.value;
+            if (isNaN(r)) {
+                alert('Give a number please');
+            }
+            if (r <= 0) {
+                alert('Give a number greater than zero');
+            }
+            if (r > 300) {
+                alert('Give a radius less than 300');
+            }
+            else {
+                var v = (4 / 3) * Math.PI * Math.pow(r, 3);
+                console.log(v);
+                volume.innerHTML = `${v}`
+                arr.push(r);
+                arr.sort((a, b) => b - a);
+
+                for (var i = 0; i <= arr.length; i++) {
+                    rt = arr[i];
+                    drawACircle(x, y, rt);
+                }
+            }
+        }
+
+        function drawACircle(x, y, r) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fillStyle = randomColor();
+            ctx.fill();
+
+        }
+
+        function ClearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function randomColor() {
+            const colorIndex = Math.floor(Math.random() * colors.length);
+            const color = colors[colorIndex]
+            return color;
+        }
+
+        var radiusB = 0
+        function drawBonus() {
+
+            ctx.beginPath()
+            ctx.arc(300, 300, radiusB, 0, 2 * Math.PI);
+            ctx.lineWidth = 1.5
+            ctx.strokeStyle = randomColor();
+            ctx.stroke()
+            if (radiusB * 2 > canvas.height || radius.value != "") {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            }
+            else {
+                radiusB += 1.5
+                setTimeout(drawBonus, 10)
+            }
+        }
+
+
+        window.onload = drawBonus();
+
+    </script>
+
+</body>
+
+</html>
